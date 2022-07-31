@@ -81,7 +81,7 @@ KERVER=$(make kernelversion)
 # Set Date 
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 
-export() {
+exports() {
     if [ $COMPILER = "clang" ]
 	then
 		KBUILD_COMPILER_STRING=$(/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
@@ -179,7 +179,7 @@ kernel_wrapit() {
 	fi
 	cd ..
 }
-export
+exports
 build_kernel
 kernel_wrapit
 
