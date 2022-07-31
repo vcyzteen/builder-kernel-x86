@@ -151,11 +151,6 @@ build_kernel() {
                     CC=clang
 		)
 	fi
-	
-	if [ $SILENCE = "1" ]
-	then
-		MAKE+=( -s )
-	fi
 
 	msg "|| Started Compilation ||"
 	make -kj"$PROCS" O=out bindeb-pkg \
