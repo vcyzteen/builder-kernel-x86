@@ -50,6 +50,9 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 ARCH=x86
 SUBARCH=$ARCH
 
+# INCREMENTAL
+INCREMENTAL=0
+
 # User builder
 KBUILD_BUILD_USER=vcyzteen
 
@@ -84,17 +87,17 @@ DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 exports() {
     if [ $COMPILER = "clang" ]
 	then
-		KBUILD_COMPILER_STRING=$(/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		KBUILD_COMPILER_STRING=$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 	elif [ $COMPILER = "gcc" ]
 	then
-		KBUILD_COMPILER_STRING=$(/bin/gcc  --version | head -n 1)
+		KBUILD_COMPILER_STRING=$(gcc  --version | head -n 1)
 	fi
 
-    BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
+        BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
 	BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
 	PROCS=$(nproc --all)
 
-    export KBUILD_BUILD_USER ARCH SUBARCH \
+        export KBUILD_BUILD_USER ARCH SUBARCH \
 	BOT_MSG_URL BOT_BUILD_URL PROCS
 }
 
@@ -139,12 +142,12 @@ build_kernel() {
 	if [ $COMPILER = "clang" ]
 	then
 		MAKE+=(
-            CC=gcc
+                    CC=gcc
 		)
 	elif [ $COMPILER = "gcc" ]
 	then
 		MAKE+=(
-            CC=clang
+                    CC=clang
 		)
 	fi
 	
