@@ -85,11 +85,9 @@ export() {
     if [ $COMPILER = "clang" ]
 	then
 		KBUILD_COMPILER_STRING=$(/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-		PATH=/bin/:$PATH
 	elif [ $COMPILER = "gcc" ]
 	then
 		KBUILD_COMPILER_STRING=$(/bin/gcc  --version | head -n 1)
-		PATH=/bin/:/bin/:/usr/bin:$PATH
 	fi
 
     BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
