@@ -46,6 +46,9 @@ KERNEL_DIR="$(pwd)"
 BASEDIR="$(basename "$KERNEL_DIR")"
 DISTRO=$(source /etc/os-release && echo "${NAME}")
 
+# Proccecsor 
+PROCS=24
+
 # Architecture
 ARCH=x86
 SUBARCH=$ARCH
@@ -95,7 +98,6 @@ exports() {
 
         BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
 	BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
-	PROCS=$(nproc --all)
 
         export KBUILD_BUILD_USER ARCH SUBARCH \
 	BOT_MSG_URL BOT_BUILD_URL PROCS
@@ -126,7 +128,7 @@ build_kernel() {
 	if [ $INCREMENTAL = 0 ]
 	then
 		msg "|| Cleaning Sources ||"
-		make mrproper && rm -rf out
+		make mrproper O=out && make clean O=out && rm -rf out
 	fi
 
 	if [ "$PTTG" = 1 ]
@@ -153,8 +155,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out bindeb-pkg \
-		V=$VERBOSE \
+	make -j"$PROCS" O=out bindeb-pkg \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
