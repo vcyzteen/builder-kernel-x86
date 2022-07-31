@@ -179,7 +179,7 @@ kernel_wrapit() {
 	fi
 	cd ..
 }
-exports
+export
 build_kernel
 kernel_wrapit
 
