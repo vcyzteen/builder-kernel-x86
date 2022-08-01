@@ -57,7 +57,7 @@ SUBARCH=$ARCH
 GETNAME=1
 
 # Upload via transfer.sh
-TRANFERSH=1
+BASHUPLOAD=1
 
 # INCREMENTAL
 INCREMENTAL=0
@@ -204,9 +204,9 @@ build_kernel() {
 
 kernel_wrap1() {
     msg "|| Uploading headers deb ||"
-    if [ "$TRANFERSH" = 1 ]
+    if [ "$BASHUPLOAD" = 1 ]
     then
-          curl -i -F filedata=@"$FILES1" -F filedata=@"$FILES2" -F filedata=@"$FILES3" https://transfer.sh
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file2=@"$FILES3"
     fi
     if [ "$PTTG" = 1 ]
     then
