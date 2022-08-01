@@ -62,6 +62,10 @@ KBUILD_BUILD_USER=vcyzteen
 # Host builder
 KBUILD_BUILD_HOST=xea@linux
 
+# Debug purpose. Send logs on every successfull builds
+# 1 is YES | 0 is NO(default)
+LOG_DEBUG=0
+
 # The defconfig which should be used. Get it from config.gz from
 # your device or check source
 DEFCONFIG=xea_defconfig
@@ -161,10 +165,10 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-		if [ ! -f "$KERNEL_DIR"/out/../"$FILES" ]
+		if [ -f "$KERNEL_DIR"/out/../"$FILES" ]
 		then
 			msg "|| Kernel successfully compiled ||"
-        else
+                else
 			if [ "$PTTG" = 1 ]
  			then
 				tg_post_build "error.log" "*Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds*"
@@ -172,15 +176,21 @@ build_kernel() {
 		fi
 }
 
-kernel_wrapit() {
+kernel_wrap() {
+    msg "|| Uploading Kernel ||"
     if [ "$PTTG" = 1 ]
  	    then
 		    tg_post_build "$FILES" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	fi
 	cd ..
 }
+
 exports
 build_kernel
-kernel_wrapit
+
+if [ $LOG_DEBUG = "1" ]
+then
+	tg_post_build "error.log" "$CHATID" "Debug Mode Logs"
+fi
 
 ####
