@@ -56,6 +56,9 @@ SUBARCH=$ARCH
 # Name file
 GETNAME=1
 
+# Upload via transfer.sh
+TRANFERSH=1
+
 # INCREMENTAL
 INCREMENTAL=0
 
@@ -201,11 +204,15 @@ build_kernel() {
 
 kernel_wrap1() {
     msg "|| Uploading headers deb ||"
-          curl -i -F filedata=@"$FILES1" -F filedata=@"$FILES2" -F filedata=@"$FILES3" https://transfer.sh 2>&1 | tee link.txt
+    if [ "$TRANFERSH" = 1 ]
+    then
+          curl -i -F filedata=@"$FILES1" -F filedata=@"$FILES2" -F filedata=@"$FILES3" https://transfer.sh
+    fi
     if [ "$PTTG" = 1 ]
     then
           tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
 #         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+	  cd ..
     fi
 }
 
