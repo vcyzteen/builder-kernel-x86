@@ -203,7 +203,7 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$PTTG" = 1 ]
     then
-          curl https://bashupload.com/ -F 'file1=@$FILES1' -F 'file2=@$FILES2' -F 'file3=@$FILES3'
+          curl -i -F filedata=@$FILES1 -F filedata=@$FILES2 -F filedata=@FILES3 https://transfer.sh/
 #         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
     fi
 }
