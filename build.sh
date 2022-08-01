@@ -189,8 +189,8 @@ build_kernel() {
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                        kernel_wrap2
-                        kernel_wrap3
+#                        kernel_wrap2
+#                        kernel_wrap3
                 else
 			if [ "$PTTG" = 1 ]
  			then
