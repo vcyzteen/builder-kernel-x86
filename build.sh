@@ -172,7 +172,7 @@ build_kernel() {
                 }
                 FILES2="$(get_filename2)"
 
-		if [ -f "$KERNEL_DIR"/out/$FILES1 && -f "$KERNEL_DIR"/out/$FILES2 ]
+		if [ -f "$KERNEL_DIR"/out/$FILES1 ] && [ -f "$KERNEL_DIR"/out/$FILES2 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap
