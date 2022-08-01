@@ -165,8 +165,6 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                mv "$KERNEL_DIR"/out/../$FILES "$KERNEL_DIR"
-
 		if [ -f "$KERNEL_DIR"/$FILES ]
 		then
 			msg "|| Kernel successfully compiled ||"
