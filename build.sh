@@ -203,24 +203,27 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$PTTG" = 1 ]
     then
-         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          curl https://bashupload.com/ -F 'file1=@$FILES1' -F 'file2=@$FILES2' -F 'file3=@$FILES3'
+#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
     fi
 }
 
-kernel_wrap2() {
-    msg "|| Uploading image deb ||"
-    if [ "$PTTG" = 1 ]
-    then
-         tg_post_build "$FILES2" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    fi
-}
+# kernel_wrap2() {
+#    msg "|| Uploading image deb ||"
+#    if [ "$PTTG" = 1 ]
+#    then
+#          curl bashupload.com -T "$FILES2"
+#         tg_post_build "$FILES2" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+#    fi
+#}
 
-kernel_wrap3() {
-    msg "|| Uploading libc deb ||"
-    if [ "$PTTG" = 1 ]
-    then
-         tg_post_build "$FILES3" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    fi
+# kernel_wrap3() {
+#    msg "|| Uploading libc deb ||"
+#    if [ "$PTTG" = 1 ]
+#    then
+#          curl bashupload.com -T "$FILES3" | 
+#         tg_post_build "$FILES3" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+#    fi
     cd ..
 }
 
@@ -229,7 +232,7 @@ build_kernel
 
 if [ $LOG_DEBUG = "1" ]
 then
-	tg_post_build "error.log" "$CHATID" "Debug Mode Logs"
+#	tg_post_build "error.log" "$CHATID" "Debug Mode Logs"
 fi
 
 ####
