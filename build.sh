@@ -47,7 +47,7 @@ BASEDIR="$(basename "$KERNEL_DIR")"
 DISTRO=$(source /etc/os-release && echo "${NAME}")
 
 # Proccecsor 
-PROCS=24
+PROCS=48
 
 # Architecture
 ARCH=x86
