@@ -82,9 +82,6 @@ PTTG=1
 		CHATID="-1001721818658"
 	fi
 
-# Files/artifacts
-FILES="*.deb"
-
 #Check Kernel Version
 KERVER=$(make kernelversion)
 
@@ -165,7 +162,17 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-		if [ -f "$KERNEL_DIR"/out/$FILES ]
+                get_filename1() {
+                    ls "$KERNEL_DIR"/out/*.deb | grep -w "image"
+                }
+                FILES1="$(get_filename1)"
+
+                get_filename2() {
+                    ls "$KERNEL_DIR"/out/*.deb | grep -w "libc"
+                }
+                FILES2="$(get_filename2)"
+
+		if [ -f "$KERNEL_DIR"/out/$FILES1 && -f "$KERNEL_DIR"/out/$FILES2 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap
@@ -183,7 +190,8 @@ kernel_wrap() {
     msg "|| Uploading Kernel ||"
     if [ "$PTTG" = 1 ]
  	    then
-		    tg_post_build "$FILES_FINAL" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+		    tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+                    tg_post_build "$FILES2" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	fi
 	cd ..
 }
