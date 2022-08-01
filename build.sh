@@ -170,20 +170,27 @@ build_kernel() {
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls *.deb | grep -w "image"
+                        ls *.deb | grep -w "headers"
                     }
                     FILES1="$(get_filename1)"
 
                     get_filename2() {
-                        ls *.deb | grep -w "libc"
+                        ls *.deb | grep -w "image"
                     }
                     FILES2="$(get_filename2)"
+
+                    get_filename3() {
+                        ls *.deb | grep -w "libc"
+                    }
+                    FILES3="$(get_filename3)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
 		then
 			msg "|| Kernel successfully compiled ||"
-                        kernel_wrap
+                        kernel_wrap1
+                        kernel_wrap2
+                        kernel_wrap3
                 else
 			if [ "$PTTG" = 1 ]
  			then
@@ -192,14 +199,29 @@ build_kernel() {
 		fi
 }
 
-kernel_wrap() {
-    msg "|| Uploading Kernel ||"
+kernel_wrap1() {
+    msg "|| Uploading headers deb ||"
     if [ "$PTTG" = 1 ]
- 	    then
-		    tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-                    tg_post_build "$FILES2" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-	fi
-	cd ..
+    then
+         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+    fi
+}
+
+kernel_wrap2() {
+    msg "|| Uploading image deb ||"
+    if [ "$PTTG" = 1 ]
+    then
+         tg_post_build "$FILES2" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+    fi
+}
+
+kernel_wrap3() {
+    msg "|| Uploading libc deb ||"
+    if [ "$PTTG" = 1 ]
+    then
+         tg_post_build "$FILES3" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+    fi
+    cd ..
 }
 
 exports
