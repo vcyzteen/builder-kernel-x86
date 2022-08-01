@@ -225,8 +225,8 @@ kernel_wrap1() {
 #          curl bashupload.com -T "$FILES3" | 
 #         tg_post_build "$FILES3" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 #    fi
-    cd ..
-}
+#    cd ..
+#}
 
 exports
 build_kernel
