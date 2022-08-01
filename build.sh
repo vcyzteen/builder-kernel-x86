@@ -47,7 +47,7 @@ BASEDIR="$(basename "$KERNEL_DIR")"
 DISTRO=$(source /etc/os-release && echo "${NAME}")
 
 # Proccecsor 
-PROCS=48
+PROCS=$(nproc --all)
 
 # Architecture
 ARCH=x86
@@ -159,13 +159,15 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -j"$PROCS" O=out bindeb-pkg \
+	make -mj"$PROCS" O=out bindeb-pkg \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-		if [ -f "$KERNEL_DIR"/out/../"$FILES" ]
+                mv "$KERNEL_DIR"/out/../"$FILES" "$KERNEL_DIR"
+
+		if [ -f "$KERNEL_DIR"/"$FILES" ]
 		then
 			msg "|| Kernel successfully compiled ||"
                 else
@@ -177,10 +179,12 @@ build_kernel() {
 }
 
 kernel_wrap() {
+    FILES_FINAL="$FILES"
+
     msg "|| Uploading Kernel ||"
     if [ "$PTTG" = 1 ]
  	    then
-		    tg_post_build "$FILES" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+		    tg_post_build "$FILES_FINAL" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	fi
 	cd ..
 }
