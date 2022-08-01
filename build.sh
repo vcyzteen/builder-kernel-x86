@@ -206,7 +206,7 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file2=@"$FILES3"
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
