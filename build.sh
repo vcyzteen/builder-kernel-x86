@@ -163,12 +163,12 @@ build_kernel() {
 		DIFF=$((BUILD_END - BUILD_START))
 
                 get_filename1() {
-                    ls "$KERNEL_DIR"/out/*.deb | grep -w "image"
+                    ls *.deb | grep -w "image"
                 }
                 FILES1="$(get_filename1)"
 
                 get_filename2() {
-                    ls "$KERNEL_DIR"/out/*.deb | grep -w "libc"
+                    ls *.deb | grep -w "libc"
                 }
                 FILES2="$(get_filename2)"
 
