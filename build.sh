@@ -53,6 +53,9 @@ PROCS=$(nproc --all)
 ARCH=x86
 SUBARCH=$ARCH
 
+# Name file
+GETNAME=1
+
 # INCREMENTAL
 INCREMENTAL=0
 
@@ -162,17 +165,22 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                get_filename1() {
-                    ls *.deb | grep -w "image"
-                }
-                FILES1="$(get_filename1)"
+                ls *.deb
 
-                get_filename2() {
-                    ls *.deb | grep -w "libc"
-                }
-                FILES2="$(get_filename2)"
+                if [ "$GETNAME" = 1 ]
+                then
+                    get_filename1() {
+                        ls *.deb | grep -w "image"
+                    }
+                    FILES1="$(get_filename1)"
 
-		if [ -f "$KERNEL_DIR"/out/$FILES1 ] && [ -f "$KERNEL_DIR"/out/$FILES2 ]
+                    get_filename2() {
+                        ls *.deb | grep -w "libc"
+                    }
+                    FILES2="$(get_filename2)"
+                fi
+
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap
@@ -185,8 +193,6 @@ build_kernel() {
 }
 
 kernel_wrap() {
-    FILES_FINAL="$FILES"
-
     msg "|| Uploading Kernel ||"
     if [ "$PTTG" = 1 ]
  	    then
