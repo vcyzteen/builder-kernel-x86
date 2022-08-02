@@ -164,7 +164,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -mj"$PROCS" O=out bindeb-pkg \
+	make -kj"$PROCS" O=out bindeb-pkg \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
