@@ -194,7 +194,7 @@ build_kernel() {
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                        kernel_wrap2
+#                        kernel_wrap2
 #                        kernel_wrap3
                 else
 			if [ "$PTTG" = 1 ]
@@ -208,7 +208,7 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file2=@"$FILES2" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
@@ -218,13 +218,13 @@ kernel_wrap1() {
     fi
 }
 
-kernel_wrap2() {
-    msg "|| Uploading image deb ||"
-    if [ "$PTTG" = 1 ]
-    then
-         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-    fi
-}
+# kernel_wrap2() {
+#    msg "|| Uploading image deb ||"
+#    if [ "$PTTG" = 1 ]
+#    then
+#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+#    fi
+#}
 
 # kernel_wrap3() {
 #    msg "|| Uploading libc deb ||"
