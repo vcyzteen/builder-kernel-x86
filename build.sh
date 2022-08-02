@@ -78,7 +78,7 @@ DEFCONFIG=xea_defconfig
 
 # Specify compiler. 
 # 'clang' or 'gcc'
-COMPILER=gcc
+COMPILER=clang
 
 # Push ZIP to Telegram. 1 is YES | 0 is NO(default)
 PTTG=1
@@ -157,7 +157,9 @@ build_kernel() {
 	elif [ $COMPILER = "gcc" ]
 	then
 		MAKE+=(
-                    CC=clang
+                    CC=clang \
+                    LLVM=1 \
+                    LLVM_IAS=1
 		)
 	fi
 
