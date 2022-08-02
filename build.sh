@@ -78,7 +78,7 @@ DEFCONFIG=xea_defconfig
 
 # Specify compiler. 
 # 'clang' or 'gcc'
-COMPILER=clang
+COMPILER=gcc
 
 # Push ZIP to Telegram. 1 is YES | 0 is NO(default)
 PTTG=1
