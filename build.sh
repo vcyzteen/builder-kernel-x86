@@ -152,14 +152,14 @@ build_kernel() {
 	if [ $COMPILER = "clang" ]
 	then
 		MAKE+=(
-                    CC=gcc
+                    CC=clang \
+                    LLVM=1 \
+                    LLVM_IAS=1
 		)
 	elif [ $COMPILER = "gcc" ]
 	then
 		MAKE+=(
-                    CC=clang \
-                    LLVM=1 \
-                    LLVM_IAS=1
+                    CC=gcc
 		)
 	fi
 
