@@ -46,11 +46,6 @@ KERNEL_DIR="$(pwd)"
 BASEDIR="$(basename "$KERNEL_DIR")"
 DISTRO=$(source /etc/os-release && echo "${NAME}")
 
-# Build Type
-#'  bindeb-pkg          - Build only the binary kernel deb package'
-#'  tarxz-pkg           - Build the kernel as a xz compressed tarball'
-BUILD_TYPE=bindeb-pkg
-
 # Proccecsor 
 PROCS=$(nproc --all)
 
@@ -169,7 +164,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -mj"$PROCS" O=out $BUILD_TYPE \
+	make -mj"$PROCS" O=out bindeb-pkg \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
@@ -193,14 +188,9 @@ build_kernel() {
                         ls *.deb | grep -w "libc"
                     }
                     FILES3="$(get_filename3)"
-		    
-		    get_filename4() {
-                        ls *.tar.xz | grep -w "xea"
-                    }
-                    FILES4="$(get_filename4)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]  && [ -f "$KERNEL_DIR"/out/../$FILES4 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
@@ -213,14 +203,15 @@ build_kernel() {
 }
 
 kernel_wrap1() {
-    msg "|| Uploading bin deb & tar.xz ||"
+    msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" -F file4=@"$FILES4" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
           tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
+#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
