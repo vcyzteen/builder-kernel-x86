@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/dash
 # shellcheck disable=SC2154
 
  # Script For Building Linux x86_64 Kernel
@@ -45,6 +45,11 @@ cdir() {
 KERNEL_DIR="$(pwd)"
 BASEDIR="$(basename "$KERNEL_DIR")"
 DISTRO=$(source /etc/os-release && echo "${NAME}")
+
+# Build Type
+#'  bindeb-pkg          - Build only the binary kernel deb package'
+#'  tarxz-pkg           - Build the kernel as a xz compressed tarball'
+BUILD_TYPE=bindeb-pkg
 
 # Proccecsor 
 PROCS=$(nproc --all)
@@ -164,7 +169,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -mj"$PROCS" O=out bindeb-pkg \
+	make -mj"$PROCS" O=out $BUILD_TYPE \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
@@ -188,14 +193,17 @@ build_kernel() {
                         ls *.deb | grep -w "libc"
                     }
                     FILES3="$(get_filename3)"
+		    
+		    get_filename4() {
+                        ls *.tar.xz | grep -w "xea"
+                    }
+                    FILES4="$(get_filename4)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]  && [ -f "$KERNEL_DIR"/out/../$FILES4 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-#                        kernel_wrap2
-#                        kernel_wrap3
                 else
 			if [ "$PTTG" = 1 ]
  			then
@@ -205,36 +213,17 @@ build_kernel() {
 }
 
 kernel_wrap1() {
-    msg "|| Uploading headers deb ||"
+    msg "|| Uploading bin deb & tar.xz ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" -F file4=@"$FILES4" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
           tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
-#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
-
-# kernel_wrap2() {
-#    msg "|| Uploading image deb ||"
-#    if [ "$PTTG" = 1 ]
-#    then
-#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-#    fi
-#}
-
-# kernel_wrap3() {
-#    msg "|| Uploading libc deb ||"
-#    if [ "$PTTG" = 1 ]
-#    then
-#          curl bashupload.com -T "$FILES3" | 
-#         tg_post_build "$FILES3" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-#    fi
-#    cd ..
-#}
 
 exports
 build_kernel
