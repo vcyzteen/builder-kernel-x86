@@ -1,4 +1,4 @@
-#! /bin/dash
+#! /bin/bash
 # shellcheck disable=SC2154
 
  # Script For Building Linux x86_64 Kernel
