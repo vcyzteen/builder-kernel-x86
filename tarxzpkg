@@ -174,7 +174,7 @@ build_kernel() {
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls out/tar*.xz | grep -w "xea"
+                        ls out/*.tar.xz | grep -w "xea"
                     }
                     FILES1="$(get_filename1)"
                 fi
