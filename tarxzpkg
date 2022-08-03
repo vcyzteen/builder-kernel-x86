@@ -169,12 +169,12 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                ls && ls /out/./ && ls arch/x86/boot && ls ./ && ls ./tar-install
+                ls && ls out && ls arch/x86/boot
 
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls *.xz | grep -w "xea"
+                        ls out/*.xz | grep -w "xea"
                     }
                     FILES1="$(get_filename1)"
                 fi
