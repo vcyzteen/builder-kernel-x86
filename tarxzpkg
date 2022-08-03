@@ -134,7 +134,7 @@ build_kernel() {
 	if [ $INCREMENTAL = 0 ]
 	then
 		msg "|| Cleaning Sources ||"
-		make mrproper O=out && make clean O=out && rm -rf out
+		make -kj"$PROCS" mrproper O=out && make -kj"$PROCS" clean O=out && rm -rf out
 	fi
 
 	if [ "$PTTG" = 1 ]
@@ -144,7 +144,7 @@ build_kernel() {
 
         mkdir -p out
 	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
-	make O=out oldconfig
+	make -kj"$PROCS" O=out oldconfig
 
 	BUILD_START=$(date +"%s")
 	
