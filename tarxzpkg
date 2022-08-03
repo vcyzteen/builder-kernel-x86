@@ -192,7 +192,7 @@ build_kernel() {
 }
 
 kernel_wrap1() {
-    msg "|| Uploading headers deb ||"
+    msg "|| Uploading tarxz pkg ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
           curl https://bashupload.com/ -F file1=@"$FILES1" 2>&1 | tee link.txt
