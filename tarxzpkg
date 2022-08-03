@@ -169,17 +169,17 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                ls out/*.tar.xz
+                mv out/*.tar.xz "$KERNEL_DIR"
 
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls out/*.tar.xz | grep -w "xea"
+                        cd "$KERNEL_DIR" && ls *.tar.xz | grep -w "xea"
                     }
                     FILES1="$(get_filename1)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/$FILES1 ]
+		if [ -f "$KERNEL_DIR"/$FILES1 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
