@@ -170,6 +170,7 @@ build_kernel() {
 		DIFF=$((BUILD_END - BUILD_START))
 
                 ls out/*xea*
+                ls out/
 
                 if [ "$GETNAME" = 1 ]
                 then
