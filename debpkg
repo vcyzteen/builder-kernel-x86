@@ -68,6 +68,9 @@ KBUILD_BUILD_USER=vcyzteen
 # Host builder
 KBUILD_BUILD_HOST=xea@linux
 
+# Main dir gcc
+MAIN_GCC=x86_64-pc-linux-gnu
+
 # Debug purpose. Send logs on every successfull builds
 # 1 is YES | 0 is NO(default)
 LOG_DEBUG=0
@@ -94,13 +97,24 @@ KERVER=$(make kernelversion)
 # Set Date 
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 
+clone() {
+        echo " "
+	if [ $COMPILER = "gcc" ]
+	then
+		msg "|| Cloning GCC xea-xo1 12.2.1 Baremetal ||"
+		git clone --depth=1 https://gitlab.com/xealea/x86-gcc-xo1.git gccx86
+		GCCX86_DIR=$KERNEL_DIR/gccx86
+	fi
+}
+
 exports() {
     if [ $COMPILER = "clang" ]
 	then
 		KBUILD_COMPILER_STRING=$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 	elif [ $COMPILER = "gcc" ]
 	then
-		KBUILD_COMPILER_STRING=$(gcc  --version | head -n 1)
+		KBUILD_COMPILER_STRING=$("$GCCX86_DIR"/"$MAIN_GCC"/bin/x86_64-pc-linux-gnu-gcc --version | head -n 1)
+		PATH=$GCCX86_DIR/$MAIN_GCC/bin/:/usr/bin:$PATH
 	fi
 
         BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
@@ -216,6 +230,7 @@ kernel_wrap1() {
     fi
 }
 
+clone
 exports
 build_kernel
 ####
