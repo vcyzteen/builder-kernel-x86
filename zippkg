@@ -182,7 +182,7 @@ build_kernel() {
 
 	msg "|| Started Compilation ||"
 	make -kj"$PROCS" O=out \
-        make -kj"$PROCS" modules O=out
+        make -kj"$PROCS" modules O=out \
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
