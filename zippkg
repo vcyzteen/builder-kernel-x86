@@ -40,6 +40,7 @@ cdir() {
 		err "The directory $1 doesn't exists !"
 }
 
+
 # The defult directory where the kernel should be placed
 KERNEL_DIR="$(pwd)"
 BASEDIR="$(basename "$KERNEL_DIR")"
@@ -55,6 +56,9 @@ SUBARCH=$ARCH
 # Name file
 GETNAME=1
 
+# Zip the dir
+ZIPPING=1
+
 # Upload via transfer.sh
 BASHUPLOAD=1
 
@@ -65,7 +69,10 @@ INCREMENTAL=0
 KBUILD_BUILD_USER=xealea
 
 # Host builder
-KBUILD_BUILD_HOST=xea@linux
+KBUILD_BUILD_HOST=xo1inux
+
+# Main dir gcc
+MAIN_GCC=x86_64-pc-linux-gnu
 
 # Debug purpose. Send logs on every successfull builds
 # 1 is YES | 0 is NO(default)
@@ -93,13 +100,24 @@ KERVER=$(make kernelversion)
 # Set Date 
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 
+clone() {
+        echo " "
+	if [ $COMPILER = "gcc" ]
+	then
+		msg "|| Cloning GCC xea-xo1 12.2.1 Baremetal ||"
+		git clone --depth=1 https://gitlab.com/xealea/x86-gcc-xo1.git gccx86
+		GCCX86_DIR=$KERNEL_DIR/gccx86
+	fi
+}
+
 exports() {
     if [ $COMPILER = "clang" ]
 	then
 		KBUILD_COMPILER_STRING=$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 	elif [ $COMPILER = "gcc" ]
 	then
-		KBUILD_COMPILER_STRING=$(gcc  --version | head -n 1)
+		KBUILD_COMPILER_STRING=$("$GCCX86_DIR"/"$MAIN_GCC"/bin/x86_64-pc-linux-gnu-gcc --version | head -n 1)
+		PATH=$GCCX86_DIR/$MAIN_GCC/bin/:/usr/bin:$PATH
 	fi
 
         BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
@@ -134,7 +152,7 @@ build_kernel() {
 	if [ $INCREMENTAL = 0 ]
 	then
 		msg "|| Cleaning Sources ||"
-		make -kj"$PROCS" mrproper O=out && make -kj"$PROCS" clean O=out && rm -rf out
+		make mrproper O=out && make clean O=out && rm -rf out
 	fi
 
 	if [ "$PTTG" = 1 ]
@@ -144,7 +162,7 @@ build_kernel() {
 
         mkdir -p out
 	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
-	make -kj"$PROCS" O=out oldconfig
+	make O=out oldconfig
 
 	BUILD_START=$(date +"%s")
 	
@@ -163,36 +181,40 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out tarxz-pkg \
+	make -kj"$PROCS" O=out \
+        make -kj"$PROCS" modules O=out
 		"${MAKE[@]}" 2>&1 | tee error.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                mv out/*.tar.xz "$KERNEL_DIR"
+         if [ "$ZIPPING" = 1 ]
+         then
+             zip -r linux-xea-xo1.zip out
+         fi
 
-                if [ "$GETNAME" = 1 ]
-                then
-                    get_filename1() {
-                        cd "$KERNEL_DIR" && ls *.tar.xz | grep -w "xea"
-                    }
-                    FILES1="$(get_filename1)"
-                fi
+         if [ "$GETNAME" = 1 ]
+         then
+             get_filename1() {
+                 ls *.zip | grep -w "xea"
+             }
+             FILES1="$(get_filename1)"
+           fi
 
-		if [ -f "$KERNEL_DIR"/$FILES1 ]
-		then
-			msg "|| Kernel successfully compiled ||"
-                        kernel_wrap1
-                else
-			if [ "$PTTG" = 1 ]
- 			then
-				tg_post_build "error.log" "*Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds*"
-			fi
-		fi
+          if [ -f "$KERNEL_DIR"/out/../$FILES1 ]
+          then
+              msg "|| Kernel successfully compiled ||"
+              kernel_wrap1
+          else
+              if [ "$PTTG" = 1 ]
+ 	      then
+	       	  tg_post_build "error.log" "*Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds*"
+	      fi
+          fi
 }
 
 kernel_wrap1() {
-    msg "|| Uploading tarxz pkg ||"
+    msg "|| Uploading linux dir ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
           curl https://bashupload.com/ -F file1=@"$FILES1" 2>&1 | tee link.txt
@@ -205,6 +227,7 @@ kernel_wrap1() {
     fi
 }
 
+clone
 exports
 build_kernel
 ####
