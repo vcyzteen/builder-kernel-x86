@@ -49,6 +49,10 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 # Proccecsor 
 PROCS=$(nproc --all)
 
+# Locales
+LC_CTYPE=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+
 # Architecture
 ARCH=x86
 SUBARCH=$ARCH
@@ -121,7 +125,7 @@ exports() {
 	BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
 
         export KBUILD_BUILD_USER ARCH SUBARCH \
-	BOT_MSG_URL BOT_BUILD_URL PROCS
+	BOT_MSG_URL BOT_BUILD_URL PROCS LC_CTYPE LC_ALL
 }
 
 
