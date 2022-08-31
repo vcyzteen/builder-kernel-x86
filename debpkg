@@ -208,12 +208,12 @@ build_kernel() {
                     FILES3="$(get_filename3)"
 
                     get_filename4() {
-                        ls *.buildinfo | grep -w "upstream"
+                        ls *.buildinfo
                     }
                     FILES4="$(get_filename4)"
 
                     get_filename5() {
-                        ls *.changes | grep -w "upstream"
+                        ls *.changes
                     }
                     FILES5="$(get_filename5)"
                 fi
