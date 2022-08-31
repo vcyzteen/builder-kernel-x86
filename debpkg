@@ -202,9 +202,19 @@ build_kernel() {
                         ls *.deb | grep -w "libc"
                     }
                     FILES3="$(get_filename3)"
+
+                    get_filename4() {
+                        ls *.buildinfo | grep -w "upstream"
+                    }
+                    FILES4="$(get_filename4)"
+
+                    get_filename5() {
+                        ls *.changes | grep -w "upstream"
+                    }
+                    FILES5="$(get_filename5)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ] && [ -f "$KERNEL_DIR"/out/../$FILES4 ] && [ -f "$KERNEL_DIR"/out/../$FILES5 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
@@ -220,7 +230,7 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" -F file4=@"$FILES4" -F file5=@"$FILES5" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
