@@ -48,6 +48,10 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 # Proccecsor 
 PROCS=$(nproc --all)
 
+# Locales
+LC_CTYPE=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+
 # Architecture
 ARCH=x86
 SUBARCH=$ARCH
@@ -66,6 +70,9 @@ KBUILD_BUILD_USER=vcyzteen
 
 # Host builder
 KBUILD_BUILD_HOST=xea@linux
+
+# Main dir gcc
+MAIN_GCC=x86_64-pc-linux-gnu
 
 # Debug purpose. Send logs on every successfull builds
 # 1 is YES | 0 is NO(default)
@@ -93,20 +100,31 @@ KERVER=$(make kernelversion)
 # Set Date 
 DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
 
+clone() {
+        echo " "
+	if [ $COMPILER = "gcc" ]
+	then
+		msg "|| Cloning GCC xea-xo1 12.2.1 Baremetal ||"
+		git clone --depth=1 https://gitlab.com/xealea/x86-gcc-xo1.git gccx86
+		GCCX86_DIR=$KERNEL_DIR/gccx86
+	fi
+}
+
 exports() {
     if [ $COMPILER = "clang" ]
 	then
 		KBUILD_COMPILER_STRING=$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 	elif [ $COMPILER = "gcc" ]
 	then
-		KBUILD_COMPILER_STRING=$(gcc  --version | head -n 1)
+		KBUILD_COMPILER_STRING=$("$GCCX86_DIR"/"$MAIN_GCC"/bin/x86_64-pc-linux-gnu-gcc --version | head -n 1)
+		PATH=$GCCX86_DIR/$MAIN_GCC/bin/:/usr/bin:$PATH
 	fi
 
         BOT_MSG_URL="https://api.telegram.org/bot$token/sendMessage"
 	BOT_BUILD_URL="https://api.telegram.org/bot$token/sendDocument"
 
         export KBUILD_BUILD_USER ARCH SUBARCH \
-	BOT_MSG_URL BOT_BUILD_URL PROCS
+	BOT_MSG_URL BOT_BUILD_URL PROCS LC_CTYPE LC_ALL
 }
 
 
@@ -169,17 +187,27 @@ build_kernel() {
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
 
-                mv out/*.tar.xz "$KERNEL_DIR"
+                ls out/*.tar.xz
 
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        cd "$KERNEL_DIR" && ls *.tar.xz | grep -w "xea"
+                        ls out/*.tar.xz | grep -w "xea"
                     }
                     FILES1="$(get_filename1)"
+
+                    get_filename2() {
+                        ls *.buildinfo
+                    }
+                    FILES4="$(get_filename2)"
+
+                    get_filename3() {
+                        ls *.changes
+                    }
+                    FILES5="$(get_filename3)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/$FILES1 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
@@ -195,7 +223,7 @@ kernel_wrap1() {
     msg "|| Uploading tarxz pkg ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
@@ -205,6 +233,7 @@ kernel_wrap1() {
     fi
 }
 
+clone
 exports
 build_kernel
 ####
