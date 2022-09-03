@@ -195,19 +195,9 @@ build_kernel() {
                         ls out/*.tar.xz | grep -w "xea"
                     }
                     FILES1="$(get_filename1)"
-
-                    get_filename2() {
-                        ls *.buildinfo
-                    }
-                    FILES4="$(get_filename2)"
-
-                    get_filename3() {
-                        ls *.changes
-                    }
-                    FILES5="$(get_filename3)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
@@ -223,7 +213,7 @@ kernel_wrap1() {
     msg "|| Uploading tarxz pkg ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" 2>&1 | tee link.txt
+          curl https://bashupload.com/ -F file1=@"$FILES1" 2>&1 | tee link.txt
     fi
     if [ "$PTTG" = 1 ]
     then
