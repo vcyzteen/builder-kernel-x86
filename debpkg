@@ -222,12 +222,7 @@ build_kernel() {
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                else
-			if [ "$PTTG" = 1 ]
- 			then
-				tg_post_build "error.log" "*Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds*"
-			fi
-		fi
+                fi
 }
 
 kernel_wrap1() {
@@ -239,7 +234,7 @@ kernel_wrap1() {
     if [ "$PTTG" = 1 ]
     then
           tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
-#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "error.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
