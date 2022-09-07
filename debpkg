@@ -67,10 +67,10 @@ BASHUPLOAD=1
 INCREMENTAL=0
 
 # User builder
-KBUILD_BUILD_USER=vcyzteen
+KBUILD_BUILD_USER=xealea
 
 # Host builder
-KBUILD_BUILD_HOST=xea@linux
+KBUILD_BUILD_HOST=xea@hosting
 
 # Main dir gcc
 MAIN_GCC=x86_64-pc-linux-gnu
@@ -231,10 +231,19 @@ kernel_wrap1() {
     then
           curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" -F file4=@"$FILES4" -F file5=@"$FILES5" 2>&1 | tee link.txt
     fi
+          msg "|| Regex file and show per link ||"
+          getcontext() {
+                cat link.txt | grep -w "wget" | grep -C 5
+          }
+          TEXT=$(getcontext)
     if [ "$PTTG" = 1 ]
     then
+          # test post here
+          tg_post_msg "<b>$TEXT</b>"
+          # post link here
           tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
-          tg_post_build "error.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          # post full log kernel here
+          tg_post_build "Linux-$KERVER-xea-xo1.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
