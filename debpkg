@@ -183,7 +183,7 @@ build_kernel() {
 
 	msg "|| Started Compilation ||"
 	make -kj"$PROCS" O=out bindeb-pkg \
-		"${MAKE[@]}" 2>&1 | tee error.log
+		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-xea-xo1.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
@@ -229,7 +229,10 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-           tg_post_build "$FILES1" "$FILES3" "$FILES4" "$FILES5"
+           tg_post_build "$FILES1" 
+           tg_post_build "$FILES3"
+           tg_post_build "$FILES4"
+           tg_post_build "$FILES5"
            curl -i -F filedata=@"$FILES2" https://transfer.sh/
     fi
     if [ "$PTTG" = 1 ]
