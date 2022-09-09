@@ -229,12 +229,13 @@ kernel_wrap1() {
     msg "|| Uploading headers deb ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" -F file2=@"$FILES2" -F file3=@"$FILES3" -F file4=@"$FILES4" -F file5=@"$FILES5" 2>&1 | tee link.txt
+           tg_post_build "$FILES1" "$FILES3" "$FILES4" "$FILES5"
+           curl -i -F filedata=@"$FILES2" https://transfer.sh/
     fi
     if [ "$PTTG" = 1 ]
     then
           # post link here
-          tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
+          # tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
           # post full log kernel here
           tg_post_build "Linux-$KERVER-xea-xo1.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
