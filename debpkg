@@ -233,7 +233,8 @@ kernel_wrap1() {
            tg_post_build "$FILES3"
            tg_post_build "$FILES4"
            tg_post_build "$FILES5"
-           curl -i -F filedata=@"$FILES2" https://transfer.sh/
+           # curl -i -F filedata=@"$FILES2" https://transfer.sh/
+           curl --upload-file "$FILES2" https://free.keep.sh
     fi
     if [ "$PTTG" = 1 ]
     then
