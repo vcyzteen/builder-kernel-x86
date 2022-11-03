@@ -50,8 +50,8 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 PROCS=$(nproc --all)
 
 # Locales
-LC_CTYPE=en_US.UTF-8
-LC_ALL=en_US.UTF-8
+locale-gen en_US en_US.UTF-8 \
+dpkg-reconfigure locales
 
 # Architecture
 ARCH=x86
