@@ -49,12 +49,8 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 # Proccecsor 
 PROCS=$(nproc --all)
 
-# Locales
-locale-gen en_US en_US.UTF-8 \
-dpkg-reconfigure locales
-
 # Architecture
-ARCH=x86
+ARCH=x86_64
 SUBARCH=$ARCH
 
 # Name file
@@ -162,8 +158,8 @@ build_kernel() {
 	fi
 
         mkdir -p out
-	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
-	make O=out oldconfig
+	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/arch/x86/configs/x86_64_defconfig
+        cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
 
 	BUILD_START=$(date +"%s")
 	
@@ -182,7 +178,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out bindeb-pkg \
+	make -kj"$PROCS" "$ARCH" "$DEFCONFIG" O=out bindeb-pkg \
 		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-xea-xo1.log
 
 		BUILD_END=$(date +"%s")
