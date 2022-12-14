@@ -40,6 +40,7 @@ cdir() {
 		err "The directory $1 doesn't exists !"
 }
 
+
 # The defult directory where the kernel should be placed
 KERNEL_DIR="$(pwd)"
 BASEDIR="$(basename "$KERNEL_DIR")"
@@ -48,12 +49,8 @@ DISTRO=$(source /etc/os-release && echo "${NAME}")
 # Proccecsor 
 PROCS=$(nproc --all)
 
-# Locales
-LC_CTYPE=en_US.UTF-8
-LC_ALL=en_US.UTF-8
-
 # Architecture
-ARCH=x86
+ARCH=x86_64
 SUBARCH=$ARCH
 
 # Name file
@@ -66,10 +63,10 @@ BASHUPLOAD=1
 INCREMENTAL=0
 
 # User builder
-KBUILD_BUILD_USER=vcyzteen
+KBUILD_BUILD_USER=xealea
 
 # Host builder
-KBUILD_BUILD_HOST=xea@linux
+KBUILD_BUILD_HOST=xea@hosting
 
 # Main dir gcc
 MAIN_GCC=x86_64-pc-linux-gnu
@@ -80,11 +77,11 @@ LOG_DEBUG=0
 
 # The defconfig which should be used. Get it from config.gz from
 # your device or check source
-DEFCONFIG=xea_defconfig
+DEFCONFIG=config_x86-64
 
 # Specify compiler. 
 # 'clang' or 'gcc'
-COMPILER=gcc
+COMPILER=clang
 
 # Push ZIP to Telegram. 1 is YES | 0 is NO(default)
 PTTG=1
@@ -152,7 +149,7 @@ build_kernel() {
 	if [ $INCREMENTAL = 0 ]
 	then
 		msg "|| Cleaning Sources ||"
-		make -kj"$PROCS" mrproper O=out && make -kj"$PROCS" clean O=out && rm -rf out
+		make mrproper O=out && make clean O=out && rm -rf out
 	fi
 
 	if [ "$PTTG" = 1 ]
@@ -161,8 +158,8 @@ build_kernel() {
 	fi
 
         mkdir -p out
-	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
-	make -kj"$PROCS" O=out oldconfig
+	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/arch/x86/configs/x86_64_defconfig
+        cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
 
 	BUILD_START=$(date +"%s")
 	
@@ -181,8 +178,8 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out tarxz-pkg \
-		"${MAKE[@]}" 2>&1 | tee error.log
+	make -kj"$PROCS" CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" "$DEFCONFIG" O=out bindeb-pkg \
+		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-clea-flow.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
@@ -192,7 +189,7 @@ build_kernel() {
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls out/*.tar.xz | grep -w "xea"
+                        ls out/*.tar.xz | grep -w "clea"
                     }
                     FILES1="$(get_filename1)"
                 fi
@@ -201,24 +198,21 @@ build_kernel() {
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                else
-			if [ "$PTTG" = 1 ]
- 			then
-				tg_post_build "error.log" "*Build failed to compile after $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds*"
-			fi
-		fi
+                fi
 }
 
 kernel_wrap1() {
-    msg "|| Uploading tarxz pkg ||"
+    msg "|| Uploading tar.xz binary ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-          curl https://bashupload.com/ -F file1=@"$FILES1" 2>&1 | tee link.txt
+          curl --upload-file "$FILES1" https://free.keep.sh
     fi
     if [ "$PTTG" = 1 ]
     then
-          tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
-#         tg_post_build "$FILES1" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          # post link here
+          # tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
+          # post full log kernel here
+          tg_post_build "Linux-$KERVER-clea-flow.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
