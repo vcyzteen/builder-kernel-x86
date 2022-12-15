@@ -158,8 +158,8 @@ build_kernel() {
 	fi
 
         mkdir -p out
-	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/arch/x86/configs/x86_64_defconfig
-        cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
+	cp CONFIGS/"$COMPILER"/config_x86-64 out/arch/x86/configs/x86_64_defconfig
+        cp CONFIGS/"$COMPILER"/config_x86-64 out/.config
 
 	BUILD_START=$(date +"%s")
 	
