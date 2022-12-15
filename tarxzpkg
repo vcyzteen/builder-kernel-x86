@@ -178,7 +178,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" "$DEFCONFIG" O=out bindeb-pkg \
+	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 "$DEFCONFIG" tarxz-pkg \
 		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-clea-flow.log
 
 		BUILD_END=$(date +"%s")
