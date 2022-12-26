@@ -177,8 +177,8 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" tarxz-pkg \
-		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-clea-flow.log
+	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 tarxz-pkg \
+		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-ROG-edition.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
@@ -211,7 +211,7 @@ kernel_wrap1() {
           # post link here
           # tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
           # post full log kernel here
-          tg_post_build "Linux-$KERVER-clea-flow.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Linux-$KERVER-ROG-Edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
