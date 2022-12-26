@@ -77,7 +77,7 @@ LOG_DEBUG=0
 
 # The defconfig which should be used. Get it from config.gz from
 # your device or check source
-DEFCONFIG=x86_64_defconfig
+DEFCONFIG=config_x86-64
 
 # Specify compiler. 
 # 'clang' or 'gcc'
