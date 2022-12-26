@@ -158,8 +158,7 @@ build_kernel() {
 	fi
 
         mkdir -p out
-	cp CONFIGS/"$COMPILER"/config_x86-64 out/arch/x86/configs/x86_64_defconfig
-        cp CONFIGS/"$COMPILER"/config_x86-64 out/.config
+	cp CONFIGS/"$COMPILER"/$DEFCONFIG out/.config
 
 	BUILD_START=$(date +"%s")
 	
@@ -178,7 +177,7 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" "$DEFCONFIG" tarxz-pkg \
+	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" tarxz-pkg \
 		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-clea-flow.log
 
 		BUILD_END=$(date +"%s")
