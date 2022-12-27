@@ -158,8 +158,7 @@ build_kernel() {
 	fi
 
         mkdir -p out
-	cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/arch/x86/configs/x86_64_defconfig
-        cp CONFIGS/"$COMPILER"/"$DEFCONFIG" out/.config
+	cp CONFIGS/"$COMPILER"/$DEFCONFIG out/.config
 
 	BUILD_START=$(date +"%s")
 	
@@ -178,8 +177,8 @@ build_kernel() {
 	fi
 
 	msg "|| Started Compilation ||"
-	make -kj"$PROCS" CC=clang LLVM=1 LLVM_IAS=1 "$ARCH" "$DEFCONFIG" O=out bindeb-pkg \
-		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-xea-xo1.log
+	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 bindeb-pkg \
+		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-ROG-edition.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
@@ -192,7 +191,7 @@ build_kernel() {
                         ls *.deb | grep -w "headers"
                     }
                     FILES1="$(get_filename1)"
-
+                    
                     get_filename2() {
                         ls *.deb | grep -w "image"
                     }
@@ -202,42 +201,36 @@ build_kernel() {
                         ls *.deb | grep -w "libc"
                     }
                     FILES3="$(get_filename3)"
-
-                    get_filename4() {
-                        ls *.buildinfo
-                    }
-                    FILES4="$(get_filename4)"
-
-                    get_filename5() {
-                        ls *.changes
-                    }
-                    FILES5="$(get_filename5)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ] && [ -f "$KERNEL_DIR"/out/../$FILES4 ] && [ -f "$KERNEL_DIR"/out/../$FILES5 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ] && [ -f "$KERNEL_DIR"/out/../$FILES3 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
+                        uploadtotg
                 fi
 }
 
 kernel_wrap1() {
-    msg "|| Uploading headers deb ||"
+    msg "|| Uploading tarzst-pkg binary ||"
     if [ "$BASHUPLOAD" = 1 ]
     then
-           tg_post_build "$FILES1" 
-           tg_post_build "$FILES3"
-           tg_post_build "$FILES4"
-           tg_post_build "$FILES5"
-           # curl -i -F filedata=@"$FILES2" https://transfer.sh/
-           curl --upload-file "$FILES2" https://free.keep.sh
+          curl --upload-file "$FILES1" https://free.keep.sh 2>&1 | tee Download-Link-HDR.txt
+          curl --upload-file "$FILES2" https://free.keep.sh 2>&1 | tee Download-Link-IMG.txt
+          curl --upload-file "$FILES3" https://free.keep.sh 2>&1 | tee Download-Link-LBC.txt
     fi
+}
+
+uploadtotg() {
+    
     if [ "$PTTG" = 1 ]
     then
           # post link here
-          # tg_post_build "link.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) seconds(s)"
+          tg_post_build "Download-Link-HDR.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Download-Link-IMG.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Download-Link-LBC.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
           # post full log kernel here
-          tg_post_build "Linux-$KERVER-xea-xo1.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Linux-$KERVER-ROG-Edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
