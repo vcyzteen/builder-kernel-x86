@@ -193,10 +193,19 @@ build_kernel() {
                     FILES1="$(get_filename1)"
                 fi
 
-		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ]
+		if [ -f "$KERNEL_DIR"/out/../$FILES1 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
+                fi
+
+                if [ "$PTTG" = 1 ]
+                then
+                    # post link here
+                    tg_post_build "Download-Link-tarzst.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+                    # post full log kernel here
+                    tg_post_build "Linux-$KERVER-rog-edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+	            cd ..
                 fi
 }
 
@@ -205,14 +214,6 @@ kernel_wrap1() {
     if [ "$BASHUPLOAD" = 1 ]
     then
           curl --upload-file "$FILES1" https://free.keep.sh 2>&1 | tee Download-Link-tarzst.txt
-    fi
-    if [ "$PTTG" = 1 ]
-    then
-          # post link here
-          tg_post_build "Download-Link-tarzst.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-          # post full log kernel here
-          tg_post_build "Linux-$KERVER-rog-edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-	  cd ..
     fi
 }
 
