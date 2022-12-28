@@ -188,7 +188,7 @@ build_kernel() {
                 if [ "$GETNAME" = 1 ]
                 then
                     get_filename1() {
-                        ls out/*.tar.zst | grep -w "ROG"
+                        ls out/*.tar.zst | grep -w "rog"
                     }
                     FILES1="$(get_filename1)"
                 fi
