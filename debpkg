@@ -230,7 +230,7 @@ uploadtotg() {
           tg_post_build "Download-Link-IMG.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
           tg_post_build "Download-Link-LBC.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
           # post full log kernel here
-          tg_post_build "Linux-$KERVER-ROG-Edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Linux-$KERVER-rog-edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
     fi
 }
