@@ -178,7 +178,7 @@ build_kernel() {
 
 	msg "|| Started Compilation ||"
 	make -kj"$PROCS" O=out CC=clang LLVM=1 LLVM_IAS=1 tarzst-pkg \
-		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-ROG-edition.log
+		"${MAKE[@]}" 2>&1 | tee Linux-$KERVER-rog-edition.log
 
 		BUILD_END=$(date +"%s")
 		DIFF=$((BUILD_END - BUILD_START))
