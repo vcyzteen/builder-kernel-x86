@@ -197,7 +197,6 @@ build_kernel() {
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                        uploadtotg
                 fi
 }
 
@@ -207,10 +206,6 @@ kernel_wrap1() {
     then
           curl --upload-file "$FILES1" https://free.keep.sh 2>&1 | tee Download-Link-tarzst.txt
     fi
-}
-
-uploadtotg() {
-    
     if [ "$PTTG" = 1 ]
     then
           # post link here
