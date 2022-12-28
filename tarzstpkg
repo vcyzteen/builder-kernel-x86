@@ -191,19 +191,14 @@ build_kernel() {
                         ls out/*.tar.zst | grep -w "ROG"
                     }
                     FILES1="$(get_filename1)"
-                    
-                    get_filename2() {
-                        ls out/*.tar.zst | grep -w "headers"
-                    }
-                    FILES1="$(get_filename2)"
                 fi
 
 		if [ -f "$KERNEL_DIR"/out/../$FILES1 ] && [ -f "$KERNEL_DIR"/out/../$FILES2 ]
 		then
 			msg "|| Kernel successfully compiled ||"
                         kernel_wrap1
-                        uploadtotg
                 fi
+                        uploadtotg
 }
 
 kernel_wrap1() {
@@ -211,7 +206,6 @@ kernel_wrap1() {
     if [ "$BASHUPLOAD" = 1 ]
     then
           curl --upload-file "$FILES1" https://free.keep.sh 2>&1 | tee Download-Link-IMG.txt
-          curl --upload-file "$FILES2" https://free.keep.sh 2>&1 | tee Download-Link-HDR.txt
     fi
 }
 
@@ -220,8 +214,7 @@ uploadtotg() {
     if [ "$PTTG" = 1 ]
     then
           # post link here
-          tg_post_build "Download-Link-IMG.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-          tg_post_build "Download-Link-HDR.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
+          tg_post_build "Download-Link-tarzst.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
           # post full log kernel here
           tg_post_build "Linux-$KERVER-ROG-Edition.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
 	  cd ..
