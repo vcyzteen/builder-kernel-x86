@@ -15,13 +15,6 @@ jobs:
         sudo apt-get update -y
         sudo apt-get upgrade -y
         sudo apt-get install -y git bc libssl-dev libelf-dev bison curl wget flex clang llvm lld gcc make cmake
-
-    - name: Clone Repository
-      run: git clone https://github.com/xealea/xea-linux-laptop-x86 --depth=1
-
-    - name: Change Directory
-      run: cd xea-linux-laptop-x86
-
-    - name: Run Script
-      run: |
+        git clone https://github.com/xealea/xea-linux-laptop-x86 --depth=1
+        cd xea-linux-laptop-x86
         curl -s https://raw.githubusercontent.com/xealea/builder-kernel-x86/clang/tarzstpkg | bash
