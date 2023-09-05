@@ -14,7 +14,7 @@ jobs:
       run: |
         sudo apt-get update -y
         sudo apt-get upgrade -y
-        sudo apt-get install -y git bc libssl-dev libelf-dev bison curl wget flex clang llvm lld gcc
+        sudo apt-get install -y git bc libssl-dev libelf-dev bison curl wget flex clang llvm lld gcc make cmake
 
     - name: Clone Repository
       run: git clone https://github.com/xealea/xea-linux-laptop-x86 --depth=1
