@@ -5,7 +5,6 @@ inefficient_task:
     cpu: 8
     memory: 32G
   build_script:
-    - apt-get install -y bc libssl-dev libelf-dev bison
     - git clone https://github.com/xealea/xea-linux-laptop-x86 --depth=1
     - cd xea-linux-laptop-x86
     - curl -s https://raw.githubusercontent.com/xealea/builder-kernel-x86/clang/tarzstpkg | bash
