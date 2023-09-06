@@ -1,0 +1,134 @@
+#!/bin/bash
+# shellcheck disable=SC2154
+
+# Script For Building Linux x86_64 Kernel
+#
+# Copyright (c) 2022-2024 vcyzteen <vcyzteen@pm.me>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# x86_64 kernel builder
+
+# Bail out if script fails
+set -e
+
+# Function to show an informational message
+msg() {
+    echo
+    echo -e "\e[1;32m$*\e[0m"
+    echo
+}
+
+err() {
+    echo -e "\e[1;41m$*\e[0m"
+    exit 1
+}
+
+cdir() {
+    cd "$1" 2>/dev/null || err "The directory $1 doesn't exist!"
+}
+
+# The default directory where the kernel should be placed
+KERNEL_DIR="$(pwd)"
+BASEDIR="$(basename "$KERNEL_DIR")"
+DISTRO=$(source /etc/os-release && echo "${NAME}")
+
+# Processor
+PROCS=$(nproc --all)
+
+# Name file
+GETNAME=1
+
+# Upload via transfer.sh
+BASHUPLOAD=1
+
+# User builder
+KBUILD_BUILD_USER=xealea
+
+# Host builder
+KBUILD_BUILD_HOST=nrxh@server
+
+# The defconfig which should be used. Get it from config.gz from
+# your device or check source
+DEFCONFIG=nrxh_config
+
+# Specify compiler.
+# 'clang' or 'gcc'
+COMPILER=clang
+
+# Check Kernel Version
+KERVER=$(make kernelversion)
+
+# Set Date
+DATE=$(TZ=Asia/Jakarta date +"%Y%m%d-%T")
+
+exports() {
+    if [ $COMPILER = "clang" ]; then
+        KBUILD_COMPILER_STRING=$(clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+    fi
+
+    export KBUILD_BUILD_USER KBUILD_BUILD_HOST \
+           PROCS LC_CTYPE LC_ALL
+}
+
+build_kernel() {
+    if [ $INCREMENTAL = 0 ]; then
+        msg "|| Cleaning Sources ||"
+        make O=out mrproper && make O=out clean && rm -rf out && mkdir -p out
+	msg "|| Copy Configuration File ||"
+	cp NRXH/$DEFCONFIG out/.config
+    fi
+
+    BUILD_START=$(date +"%s")
+
+    if [ $COMPILER = "clang" ]; then
+        MAKE+=(
+            CC=clang \
+	    LD=ld.lld \
+            LLVM=1 \
+            LLVM_IAS=1
+        )
+    fi
+
+    msg "|| Started Compilation ||"
+    make -kj"$PROCS" O=out CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1 tarxz-pkg \
+        "${MAKE[@]}" 2>&1 | tee Linux-$KERVER.log
+
+    BUILD_END=$(date +"%s")
+    DIFF=$((BUILD_END - BUILD_START))
+
+    if [ "$GETNAME" = 1 ]; then
+        get_filename1() {
+            ls out/*.tar.xz | grep -w "nrxh"
+        }
+        FILES1="$(get_filename1)"
+    fi
+
+    if [ -f "$KERNEL_DIR"/out/../$FILES1 ]; then
+        msg "|| Kernel successfully compiled ||"
+        kernel_wrap1
+    fi
+        cd ..
+}
+
+kernel_wrap1() {
+    msg "|| Uploading tarzst-pkg binary ||"
+    if [ "$BASHUPLOAD" = 1 ]; then
+        curl --upload-file "$FILES1" https://free.keep.sh 2>&1 
+	msg "|| Upload Log Kernel Build ||"
+	curl --upload-file "Linux-$KERVER.log" https://free.keep.sh 2>&1
+    fi
+}
+
+exports
+build_kernel
