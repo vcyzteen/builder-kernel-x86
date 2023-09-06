@@ -49,21 +49,17 @@ PROCS=$(nproc --all)
 # Name file
 GETNAME=1
 
+# Clean Sc
+CLEAN=1
+
 # Upload via transfer.sh
 BASHUPLOAD=1
-
-# INCREMENTAL
-INCREMENTAL=0
 
 # User builder
 KBUILD_BUILD_USER=xealea
 
 # Host builder
 KBUILD_BUILD_HOST=nrxh@server
-
-# Debug purpose. Send logs on every successful build
-# 1 is YES | 0 is NO (default)
-LOG_DEBUG=0
 
 # The defconfig which should be used. Get it from config.gz from
 # your device or check source
@@ -89,7 +85,7 @@ exports() {
 }
 
 build_kernel() {
-    if [ $INCREMENTAL = 0 ]; then
+    if [ $CLEAN = 1 ]; then
         msg "|| Cleaning Sources ||"
         make O=out mrproper && make O=out clean && rm -rf out && mkdir -p out
 	msg "|| Copy Configuration File ||"
