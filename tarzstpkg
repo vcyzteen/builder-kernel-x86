@@ -125,22 +125,15 @@ build_kernel() {
         msg "|| Kernel successfully compiled ||"
         kernel_wrap1
     fi
-
-    if [ "$PTTG" = 1 ]; then
-        # post link here
-        msg "Download-Link-tarzst.txt" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
-        # post full log kernel here
-        msg "Linux-$KERVER.log" "Build took : $((DIFF / 60)) minute(s) and $((DIFF % 60)) second(s)"
         cd ..
-    fi
 }
 
 kernel_wrap1() {
     msg "|| Uploading tarzst-pkg binary ||"
     if [ "$BASHUPLOAD" = 1 ]; then
-        curl --upload-file "$FILES1" https://free.keep.sh 2>&1 | tee Download-Link-tarzst.txt
-	msg "|| Show The Link ||"
-	cat Download-Link-tarzst.txt
+        curl --upload-file "$FILES1" https://free.keep.sh 2>&1 
+	msg "|| Upload Log Kernel Build ||"
+	curl --upload-file "Linux-$KERVER.log" https://free.keep.sh 2>&1
     fi
 }
 
