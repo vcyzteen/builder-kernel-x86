@@ -122,14 +122,14 @@ build_kernel() {
         # Mengunggah setiap file
         msg "|| Uploading $file.deb ||"
         if [ "$BASHUPLOAD" = 1 ]; then
-            curl --upload-file "$file.deb" https://free.keep.sh 2>&1 
+            curl -T "$file.deb" https://pixeldrain.com/api/file/ 2>&1 
         fi
     done
     
     # Mengunggah log hasil kompilasi
     msg "|| Upload Log Kernel Build ||"
     if [ "$BASHUPLOAD" = 1 ]; then
-        curl --upload-file "Linux-$KERVER.log" https://free.keep.sh 2>&1
+        curl -T "Linux-$KERVER.log" https://pixeldrain.com/api/file/ 2>&1
     fi
 }
 
