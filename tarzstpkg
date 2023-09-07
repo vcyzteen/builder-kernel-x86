@@ -127,9 +127,9 @@ build_kernel() {
 kernel_wrap1() {
     msg "|| Uploading tarzst-pkg binary ||"
     if [ "$BASHUPLOAD" = 1 ]; then
-        curl --upload-file "$FILES1" https://free.keep.sh 2>&1 
+        curl -T "$FILES1" https://pixeldrain.com/api/file/ 2>&1 
 	msg "|| Upload Log Kernel Build ||"
-	curl --upload-file "Linux-$KERVER.log" https://free.keep.sh 2>&1
+	curl -T "Linux-$KERVER.log" https://pixeldrain.com/api/file/ 2>&1
     fi
 }
 
