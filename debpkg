@@ -113,7 +113,7 @@ build_kernel() {
     if [ "$GETNAME" = 1 ]; then
         # Mengambil nama file hasil kompilasi dengan ekstensi .deb
         get_filename() {
-            ls out/*.deb | grep -w -E "headers|image|libc" | sed 's/.deb$//'
+            ls *.deb | grep -w -E "headers|image|libc" | sed 's/.deb$//'
         }
         FILES="$(get_filename)"
     fi
